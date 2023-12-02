@@ -22,6 +22,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({}));
 app.use(cors());
+app.use(upload.single("image"));
 
 // Define your routes here
 app.get("/", (req, res) => {
