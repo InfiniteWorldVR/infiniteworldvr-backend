@@ -50,7 +50,6 @@ const teamController = {
   }),
   updateTeam: tryCatchHandler(async (req, res) => {
     const team = await Team.findById(req.params.id);
-
     let updatedTeam;
     console.log(req.body);
     if (req.file) {

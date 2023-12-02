@@ -1,8 +1,13 @@
 import { Router } from "express";
+import express from "express";
 
 import teamController from "../controllers/teamController";
+import upload from "../helper/multer";
 
 const router = Router();
+
+const app = express();
+app.use(upload.single("image"));
 
 router.get("/", teamController.getTeams);
 router.get("/:id", teamController.getTeamById);
