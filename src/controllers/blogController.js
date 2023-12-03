@@ -26,7 +26,9 @@ const blogController = {
   }),
 
   getBlogs: tryCatchHandler(async (req, res) => {
-    const blogs = await blogModel.find();
+    const blogs = await blogModel.find({
+      isDeleted: false,
+    });
     return res.status(200).json({
       status: "success",
       results: blogs.length,
@@ -77,13 +79,7 @@ const blogController = {
   }),
   deleteBlog: tryCatchHandler(async (req, res) => {
     //  delete is to change isDeleted to true
-    const deletedBlog = await blogModel.findByIdAndUpdate(
-      req.params.id,
-      { isDeleted: true },
-      {
-        new: true,
-      }
-    );
+    const deletedBlog = await blogModel.findByIdAndDelete(req.params.id);
     if (!deletedBlog) {
       return res.status(404).json({ error: "Blog not found" });
     }

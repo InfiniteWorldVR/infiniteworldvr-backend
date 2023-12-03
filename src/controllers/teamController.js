@@ -25,9 +25,7 @@ const teamController = {
     });
   }),
   getTeams: tryCatchHandler(async (req, res) => {
-    const teams = await Team.find({
-      isDeleted: false,
-    });
+    const teams = await Team.find();
     return res.json({
       status: "success",
       results: teams.length,
@@ -81,13 +79,7 @@ const teamController = {
     });
   }),
   deleteTeam: tryCatchHandler(async (req, res) => {
-    const team = await Team.findByIdAndUpdate(
-      req.params.id,
-      { isDeleted: true },
-      {
-        new: true,
-      }
-    );
+    const team = await Team.findByIdAndDelete(req.params.id);
     if (!team) {
       return res.status(404).json({ error: "Team not found" });
     }
