@@ -26,9 +26,12 @@ const blogController = {
   }),
 
   getBlogs: tryCatchHandler(async (req, res) => {
-    const blogs = await blogModel.find({
-      isDeleted: false,
-    });
+    const blogs = await blogModel
+      .find({
+        isDeleted: false,
+      })
+      .sort({ createdAt: -1 });
+    ;
     return res.status(200).json({
       status: "success",
       results: blogs.length,
