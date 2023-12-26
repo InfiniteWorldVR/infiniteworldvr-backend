@@ -1,5 +1,3 @@
-tryCatchHandler;
-import { populate } from "dotenv";
 import { uploadToCloud } from "../helper/cloud";
 import { tryCatchHandler } from "../helper/tryCatchHandler";
 import blogModel from "../model/blogModel";
@@ -34,7 +32,9 @@ const blogController = {
         isDeleted: false,
       })
       .sort({ createdAt: -1 })
-      .populate("user");
+      .populate("user")
+      .populate("comments");
+
     return res.status(200).json({
       status: "success",
       results: blogs.length,
@@ -66,7 +66,7 @@ const blogController = {
       const image = await uploadToCloud(req.file, res);
       updatedBlog = await blogModel.findByIdAndUpdate(
         req.params.id,
-        { ...req.body, image: image.secure_url },
+        { ...req.body, image: image.secure_url, user: req.user._id },
         {
           new: true,
         }
@@ -75,7 +75,7 @@ const blogController = {
       updatedBlog = await blogModel
         .findByIdAndUpdate(
           req.params.id,
-          { ...req.body, image: post.image },
+          { ...req.body, image: post.image, user: req.user._id },
           {
             new: true,
           }

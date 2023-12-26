@@ -11,6 +11,7 @@ import categoryRoute from "./routes/categoryRoute";
 import contactRoute from "./routes/contactRoute";
 import notificationRoute from "./routes/notificationRoute";
 import userRoute from "./routes/userRoute";
+import commentRoute from "./routes/commentRoute";
 import upload from "./helper/multer";
 import { handleInternalServerError } from "./controllers/errorController";
 
@@ -38,6 +39,7 @@ app.use("/contacts", contactRoute);
 app.use("/notifications", notificationRoute);
 app.use("/letters", letterRoute);
 app.use("/users", userRoute);
+app.use("/comments", commentRoute);
 
 app.use(handleInternalServerError);
 
