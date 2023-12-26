@@ -1,10 +1,12 @@
 tryCatchHandler;
+import { populate } from "dotenv";
 import { uploadToCloud } from "../helper/cloud";
 import { tryCatchHandler } from "../helper/tryCatchHandler";
 import blogModel from "../model/blogModel";
 
 const blogController = {
   createBlog: tryCatchHandler(async (req, res) => {
+    console.log(req.user);
     if (!req.file) {
       return res.status(400).json({ error: "Image is required" });
     }
@@ -15,6 +17,7 @@ const blogController = {
       image: image.secure_url,
       content: req.body.content,
       category: req.body.category,
+      user: req.user._id,
     });
     res.status(201).json({
       status: "success",
@@ -30,8 +33,8 @@ const blogController = {
       .find({
         isDeleted: false,
       })
-      .sort({ createdAt: -1 });
-    ;
+      .sort({ createdAt: -1 })
+      .populate("user");
     return res.status(200).json({
       status: "success",
       results: blogs.length,
@@ -56,6 +59,8 @@ const blogController = {
 
   updateBlog: tryCatchHandler(async (req, res) => {
     const post = await blogModel.findById(req.params.id);
+    console.log(req.user._id, post.user, "user");
+
     let updatedBlog;
     if (req.file) {
       const image = await uploadToCloud(req.file, res);
@@ -67,13 +72,15 @@ const blogController = {
         }
       );
     } else {
-      updatedBlog = await blogModel.findByIdAndUpdate(
-        req.params.id,
-        { ...req.body, image: post.image },
-        {
-          new: true,
-        }
-      );
+      updatedBlog = await blogModel
+        .findByIdAndUpdate(
+          req.params.id,
+          { ...req.body, image: post.image },
+          {
+            new: true,
+          }
+        )
+        .populate("user");
     }
     if (!updatedBlog) {
       return res.status(404).json({ error: "Blog not found" });
@@ -81,7 +88,6 @@ const blogController = {
     return res.status(200).json({ message: "Blog updated successfully" });
   }),
   deleteBlog: tryCatchHandler(async (req, res) => {
-    //  delete is to change isDeleted to true
     const deletedBlog = await blogModel.findByIdAndDelete(req.params.id);
     if (!deletedBlog) {
       return res.status(404).json({ error: "Blog not found" });
