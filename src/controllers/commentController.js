@@ -28,8 +28,6 @@ const commentController = {
     });
   }),
   addCommentPost: tryCatchHandler(async (req, res) => {
-    // update blog post  to make populate work on comment id
-
     const blog = await blogModel.findById(req.params.id);
     if (!blog) {
       return res.status(404).json({ error: "Blog not found" });
@@ -37,8 +35,8 @@ const commentController = {
     const newComment = await commentModel.create({
       ...req.body,
       blog: req.params.id,
-      email: req?.user?.email || req.body.email,
-      name: req?.user?.name || req.body.name,
+      email: req.user.email,
+      name: req.user.name,
     });
 
     blog.comments.push(newComment._id);
@@ -94,7 +92,14 @@ const commentController = {
       message: "Comment deleted successfully",
     });
   }),
-};
 
+  deleteAllComments: tryCatchHandler(async (req, res) => {
+    await commentModel.deleteMany({});
+    return res.status(200).json({
+      status: "success",
+      message: "All comments deleted successfully",
+    });
+  }),
+};
 
 export default commentController;

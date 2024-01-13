@@ -14,6 +14,7 @@ import userRoute from "./routes/userRoute";
 import commentRoute from "./routes/commentRoute";
 import upload from "./helper/multer";
 import { handleInternalServerError } from "./controllers/errorController";
+import appRouter from "./routes";
 
 dotenv.config();
 
@@ -31,15 +32,9 @@ app.get("/", (req, res) => {
     message: " Welcome to infinite world VR api",
   });
 });
-app.use("/blogs", blogRoute);
-app.use("/teams", teamRoute);
-app.use("/category", categoryRoute);
-app.use("/products", productRoute);
-app.use("/contacts", contactRoute);
-app.use("/notifications", notificationRoute);
-app.use("/letters", letterRoute);
-app.use("/users", userRoute);
-app.use("/comments", commentRoute);
+
+
+app.use("/", appRouter);
 
 app.use(handleInternalServerError);
 
