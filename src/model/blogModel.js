@@ -31,6 +31,7 @@ const blogSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
   },
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Like" }],
   category: {
     type: String,
     required: true,

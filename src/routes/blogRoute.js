@@ -19,4 +19,10 @@ router.put("/:id", auth, blogController.updateBlog);
 
 router.delete("/:id", auth, blogController.deleteBlog);
 
+router.post("/:id/like", blogController.addLikeToPost);
+
+router.get("/:id/like", blogController.getLikes);
+
+
+
 export default router;

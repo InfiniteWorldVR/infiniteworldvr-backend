@@ -32,6 +32,7 @@ const commentController = {
     if (!blog) {
       return res.status(404).json({ error: "Blog not found" });
     }
+
     const newComment = await commentModel.create({
       ...req.body,
       blog: req.params.id,
@@ -81,12 +82,12 @@ const commentController = {
     if (!comment) {
       return res.status(404).json({ error: "Comment not found" });
     }
-    if (comment.user.toString() !== req.user._id.toString()) {
+    if (comment.name !== req.user.name) {
       return res
-        .status(401)
+        .status(403)
         .json({ error: "You are not authorized to delete this comment" });
     }
-    await comment.findByIdAndUpdate(req.params.id, { isDeleted: true });
+    await commentModel.findByIdAndDelete(req.params.id);
     return res.status(200).json({
       status: "success",
       message: "Comment deleted successfully",

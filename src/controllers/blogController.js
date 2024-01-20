@@ -1,6 +1,7 @@
 import { uploadToCloud } from "../helper/cloud";
 import { tryCatchHandler } from "../helper/tryCatchHandler";
 import blogModel from "../model/blogModel";
+import likesSchema from "../model/likesSchema";
 
 const blogController = {
   createBlog: tryCatchHandler(async (req, res) => {
@@ -93,6 +94,54 @@ const blogController = {
       return res.status(404).json({ error: "Blog not found" });
     }
     return res.json({ message: "Blog deleted successfully" });
+  }),
+
+  addLikeToPost: tryCatchHandler(async (req, res) => {
+    const blog = await blogModel.findById(req.params.id);
+    if (!blog) {
+      return res.status(404).json({ error: "Blog not found" });
+    }
+
+
+    const getLike = await likesSchema.findOne({
+      user: req.body.user,
+      post: req.params.id,
+    });
+    if (getLike) {
+      await likesSchema.findByIdAndDelete(getLike._id);
+      blog.likes.pull(getLike._id); //pull is used to remove the id from the array
+
+      await blog.save();
+      return res.status(200).json({
+        status: "success",
+        message: "Like deleted successfully",
+      });
+    }
+    const like = await likesSchema.create({
+      user: req.body.user,
+      post: req.params.id,
+    });
+
+    blog.likes.push(like._id);
+    await blog.save();
+    return res.status(201).json({
+      status: "success",
+      message: "Like added successfully",
+      data: {
+        like,
+      },
+    });
+  }),
+
+  getLikes: tryCatchHandler(async (req, res) => {
+    const likes = await likesSchema.find({ post: req.params.id });
+    return res.status(200).json({
+      status: "success",
+      results: likes.length,
+      data: {
+        likes,
+      },
+    });
   }),
 };
 
