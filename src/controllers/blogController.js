@@ -1,4 +1,5 @@
 import { uploadToCloud } from "../helper/cloud";
+import sendEmail from "../helper/sendMail";
 import { tryCatchHandler } from "../helper/tryCatchHandler";
 import blogModel from "../model/blogModel";
 import likesSchema from "../model/likesSchema";
@@ -102,7 +103,6 @@ const blogController = {
       return res.status(404).json({ error: "Blog not found" });
     }
 
-
     const getLike = await likesSchema.findOne({
       user: req.body.user,
       post: req.params.id,
@@ -132,15 +132,23 @@ const blogController = {
       },
     });
   }),
-
   getLikes: tryCatchHandler(async (req, res) => {
-    const likes = await likesSchema.find({ post: req.params.id });
+    const likes = await likesSchema.find({
+      post: req.params.id,
+    });
     return res.status(200).json({
       status: "success",
       results: likes.length,
       data: {
         likes,
       },
+    });
+  }),
+  testEmail: tryCatchHandler(async (req, res) => {
+    sendEmail("robertn@infiniteworldvr.com", "test", "test");
+    return res.status(200).json({
+      status: "success",
+      message: "Email sent",
     });
   }),
 };

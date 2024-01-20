@@ -23,6 +23,6 @@ router.post("/:id/like", blogController.addLikeToPost);
 
 router.get("/:id/like", blogController.getLikes);
 
-
+router.post("/test/email", blogController.testEmail);
 
 export default router;
