@@ -2,14 +2,16 @@ import { uploadToCloud } from "../helper/cloud";
 import sendEmail from "../helper/sendMail";
 import { tryCatchHandler } from "../helper/tryCatchHandler";
 import blogModel from "../model/blogModel";
+import letterModel from "../model/letterModel";
 import likesSchema from "../model/likesSchema";
 
 const blogController = {
   createBlog: tryCatchHandler(async (req, res) => {
-    console.log(req.user);
+    const subscribedEmails = await letterModel.find();
     if (!req.file) {
       return res.status(400).json({ error: "Image is required" });
     }
+
     const image = await uploadToCloud(req.file, res);
     const newBlog = await blogModel.create({
       title: req.body.title,
@@ -19,7 +21,35 @@ const blogController = {
       category: req.body.category,
       user: req.user._id,
     });
-    res.status(201).json({
+    //    link on webiste look like this https://infiniteworldvr.com/blog/65a6df0193e30efb9d8a021c
+
+    for (let index = 0; index < subscribedEmails.length; index++) {
+      sendEmail(
+        subscribedEmails[index].email,
+        "New post from  Infinite World VR",
+        `
+         <body  style="color: black">
+
+          <h1>Hello</h1>
+          <p style="font-size: 20px;"> We have a new post on our website, please check it out </p>
+          <p style="font-size: 20px;"> ${newBlog.title} </p>
+          <p style="font-size: 20px;"> ${newBlog.summary} </p>
+          <div style="width: 100%; height: 100%; padding: 20px;">
+          <img src="${newBlog.image}" alt="blog image" style="width: 300px; height: 300px; object-fit: cover;"/>
+            <a href="https://infiniteworldvr.com/blog/${newBlog._id}" target="_blank" style="text-decoration: none; color: #000; display:block">
+              <br />
+              <button style="background-color: #000; color: #fff; padding: 10px; border: none; border-radius: 5px; margin-top: 10px; cursor: pointer;">Read more</button>
+            </a>
+          </div>
+          <p>Visit us at <a href="http://www.infiniteworldvr.com" target="_blank" style="color: #777;">www.infiniteworldvr.com</a>
+          
+          </p>
+         </body>
+      `
+      );
+    }
+
+    return res.status(201).json({
       status: "success",
       message: "Blog created successfully",
       data: {
@@ -58,7 +88,6 @@ const blogController = {
       },
     });
   }),
-
   updateBlog: tryCatchHandler(async (req, res) => {
     const post = await blogModel.findById(req.params.id);
     console.log(req.user._id, post.user, "user");
@@ -96,13 +125,11 @@ const blogController = {
     }
     return res.json({ message: "Blog deleted successfully" });
   }),
-
   addLikeToPost: tryCatchHandler(async (req, res) => {
     const blog = await blogModel.findById(req.params.id);
     if (!blog) {
       return res.status(404).json({ error: "Blog not found" });
     }
-
     const getLike = await likesSchema.findOne({
       user: req.body.user,
       post: req.params.id,
