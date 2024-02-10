@@ -13,12 +13,21 @@ const transporter = nodemailer.createTransport({
 });
 const sendEmail = async (to, subject, text) => {
   try {
-    const mailOptions = {
-      from: "info@infiniteworldvr.com",
-      to,
-      subject,
-      html: text,
-    };
+const mailOptions = {
+  from: "Infinite World VR <info@infiniteworldvr.com>",
+  to: to,
+  subject: subject,
+  html: text,
+  attachments: [
+    {
+      filename: "InfiniteWorldVr.png", // Replace with your logo filename
+      path: "https://res.cloudinary.com/nrob/image/upload/v1699701889/tip%20top%20consultancy/infinityworldvr/bkengf5vkx69uchkquxd.jpg", // Replace with the actual path to your logo
+      cid: "InfiniteWorldVr@logo", // Use a unique CID for each attachment
+    },
+  ],
+  // Add any additional email options as needed
+};
+
     const info = await transporter.sendMail(mailOptions);
     console.log("Email sent:", info.response);
   } catch (error) {

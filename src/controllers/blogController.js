@@ -28,27 +28,33 @@ const blogController = {
         subscribedEmails[index].email,
         "New post from  Infinite World VR",
         `
-         <body  style="color: black">
+      <body style="color: black; font-family: 'Arial', sans-serif; text-align: center;">
 
-          <h1>Hello</h1>
-          <p style="font-size: 20px;"> We have a new post on our website, please check it out </p>
-          <p style="font-size: 20px;"> ${newBlog.title} </p>
-          <p style="font-size: 20px;"> ${newBlog.summary} </p>
-          <div style="width: 100%; height: 100%; padding: 20px;">
-          <img src="${newBlog.image}" alt="blog image" style="width: 300px; height: 300px; object-fit: cover;"/>
-            <a href="https://infiniteworldvr.com/blog/${newBlog._id}" target="_blank" style="text-decoration: none; color: #000; display:block">
-              <br />
-              <button style="background-color: #000; color: #fff; padding: 10px; border: none; border-radius: 5px; margin-top: 10px; cursor: pointer;">Read more</button>
-            </a>
-          </div>
-          <p>Visit us at <a href="http://www.infiniteworldvr.com" target="_blank" style="color: #777;">www.infiniteworldvr.com</a>
-          
-          </p>
-         </body>
+      <h1 style="color: #000; font-size: 28px; margin-bottom: 10px;">
+      Exciting News! 🚀 New Post Alert at Infinite World VR!
+      </h1>
+      <p style="font-size: 18px; margin-bottom: 15px;">
+    Discover the latest on our website – a new post awaits your exploration.
+  </p>
+  <div style="width: 100%; padding: 20px;">
+    <img src="${newBlog.image}" alt="blog image" style="width: 100%; max-width: 400px; height: auto; border-radius: 8px; margin-bottom: 15px;">
+    <p style="font-size: 20px; margin-bottom: 15px;">
+      <strong>${newBlog.title}</strong><br />
+      ${newBlog.summary}
+    </p>
+    <a href="https://infiniteworldvr.com/blog/${newBlog._id}" target="_blank" style="text-decoration: none; color: #000;">
+      <button style="background-color: #000; color: #fff; padding: 10px; border: none; border-radius: 5px; cursor: pointer;">
+        Read more
+      </button>
+    </a>
+  </div>
+  <p style="font-size: 16px;">
+    Visit us at <a href="http://www.infiniteworldvr.com" target="_blank" style="color: #777; text-decoration: none;">www.infiniteworldvr.com</a>
+  </p>
+</body>
       `
       );
     }
-
     return res.status(201).json({
       status: "success",
       message: "Blog created successfully",
