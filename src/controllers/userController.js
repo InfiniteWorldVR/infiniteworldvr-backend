@@ -116,10 +116,10 @@ const userController = {
       message: "Users delete success",
     });
   }),
-  forgotPassword: tryCatchHandler(async (req, res, next) => {
+  forgotPassword: tryCatchHandler(async (req, res) => {
     const user = await userModel.findOne({ email: req.body.email });
     if (!user) {
-      return next(new AppError("User not found", 404));
+      return res.status(404).json({ error: "User not found" });
     }
     const resetToken = user.createPasswordResetToken();
     await user.save({ validateBeforeSave: false });
@@ -134,7 +134,7 @@ const userController = {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
        <title>Password Reset</title>
        <style>
-    body {
+       body {
       font-family: 'Arial', sans-serif;
       background-color: #f4f4f4;
       margin: 0;
@@ -157,16 +157,18 @@ const userController = {
     .cta-button {
       display: inline-block;
       padding: 10px 20px;
-      font-size: 16px;
-      font-weight: bold;
+      font-size: 12px;
       text-align: center;
       text-decoration: none;
-      background-color: #3498db;
-      color: #ffffff;
-      border-radius: 4px;
+      background-color: rgb(226, 193, 0);
+      color: black;
+      border-radius: 8px;
     }
     .cta-button:hover {
-      background-color: #217dbb;
+      background-color: rgb(238, 214, 0);
+    }
+    a{
+      color:#000000;
     }
     .footer {
       margin-top: 20px;
@@ -202,7 +204,7 @@ const userController = {
     });
   }),
 
-  resetPassword: tryCatchHandler(async (req, res, next) => {
+  resetPassword: tryCatchHandler(async (req, res) => {
     const hashedToken = crypto
       .createHash("sha256")
       .update(req.params.token)
@@ -213,7 +215,7 @@ const userController = {
     });
     console.log(user);
     if (!user) {
-      return next(new AppError("Token is invalid or has expired", 400));
+      return res.status(400).json({ error: "Token is invalid or has expired" });
     }
     user.password = req.body.password;
     user.passwordResetToken = undefined;
