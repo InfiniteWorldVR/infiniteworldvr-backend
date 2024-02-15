@@ -21,18 +21,22 @@ dotenv.config();
 const app = express();
 
 app.use(morgan("dev"));
-app.use(express.json());
+app.use(
+  express.json({
+    verify: (req, res, buf) => {
+      return (req.rawBody = buf);
+    },
+  })
+);
 app.use(express.urlencoded({}));
 app.use(cors());
 app.use(upload.single("image"));
 
-// Define your routes here
 app.get("/", (req, res) => {
   res.status(200).json({
     message: " Welcome to infinite world VR api",
   });
 });
-
 
 app.use("/", appRouter);
 

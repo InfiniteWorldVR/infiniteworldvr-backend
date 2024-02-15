@@ -34,6 +34,17 @@ router.put(
   productController.updateProduct
 );
 
-router.post("/checkout", productController.checkout);
+router.post(
+  "/create-checkout-session",
+  productController.createCheckoutSession
+);
+router.post("/webhook", productController.webhook);
+
+router.get(
+  "/get/checkout/sessions",
+  productController.stripeGetAllCheckoutSessions
+);
+
+router.get("/get/balance", productController.getBalance);
 
 export default router;
