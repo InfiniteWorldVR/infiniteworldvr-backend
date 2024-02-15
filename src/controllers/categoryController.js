@@ -22,7 +22,7 @@ const categoryController = {
       status: "success",
       results: categories.length,
       data: {
-        category:categories
+        category: categories,
       },
     });
   }),
@@ -55,11 +55,10 @@ const categoryController = {
     });
   }),
   deleteCategory: tryCatchHandler(async (req, res) => {
-    const category = await category.findById(req.params.id);
-    if (!category) {
+    const cat = await category.findByIdAndDelete(req.params.id);
+    if (!cat) {
       return res.status(404).json({ error: "Category not found" });
     }
-    await category.findByIdAndUpdate(req.params.id, { isDeleted: true });
     return res.status(200).json({
       status: "success",
       message: "Category deleted successfully",

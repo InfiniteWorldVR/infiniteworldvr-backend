@@ -34,4 +34,6 @@ router.put(
   productController.updateProduct
 );
 
+router.post("/checkout", productController.checkout);
+
 export default router;

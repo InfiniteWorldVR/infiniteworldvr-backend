@@ -97,13 +97,8 @@ const userController = {
     });
   }),
   deleteUser: tryCatchHandler(async (req, res) => {
-    const user = await userModel.findByIdAndUpdate(
-      req.params.id,
-      { isDeleted: true },
-      {
-        new: true,
-      }
-    );
+    const user = await userModel.findByIdAndDelete(req.params.id);
+    
     if (!user) {
       return res.status(404).json({ error: "user not found" });
     }
