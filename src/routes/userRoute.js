@@ -6,8 +6,8 @@ const router = express.Router();
 router.get("/", userController.getUsers);
 router.post("/register", userController.createUser);
 router.post("/login", userController.login);
-router.post("/forgotPassword", userController.forgotPassword);
-router.patch("/resetPassword/:token", userController.resetPassword);
+router.post("/forgot-password", userController.forgotPassword);
+router.patch("/reset-password/:token", userController.resetPassword);
 router
   .route("/:id")
   .get(userController.getUserById)

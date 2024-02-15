@@ -124,9 +124,7 @@ const userController = {
     const resetToken = user.createPasswordResetToken();
     await user.save({ validateBeforeSave: false });
 
-    const resetURL = `${req.protocol}://${req.get(
-      "host"
-    )}/api/v1/users/resetPassword/${resetToken}`;
+    const resetURL = `${process.env.WEB_APP_URL}/auth/reset-password/${resetToken}`;
 
     const message = `
       <!DOCTYPE html>
